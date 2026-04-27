@@ -1,6 +1,7 @@
 import numpy as np
-from config import DT, MAX_TIME, BURN_TIME
-from physics import calc_acceleration_2d, calc_dynamic_pressure
+from config import DT, MAX_TIME
+from physics import calc_acceleration_2d, calc_dynamic_pressure, load_motor, _burn_time as BURN_TIME
+from physics import calc_acceleration_2d, calc_dynamic_pressure, load_motor
 
 def run_simulation():
     t = 0.0
