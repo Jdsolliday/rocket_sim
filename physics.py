@@ -1,18 +1,7 @@
 import numpy as np
 import os
 import pandas as pd
-from config import (
-    G,
-    PROPELLANT_MASS,
-    TOTAL_MASS,
-    DRY_MASS,
-    LAUNCH_ANGLE,
-    WIND_SPEED,
-    CHUTE_AREA,
-    CHUTE_CD,
-    DIAMETER,
-    CD,
-)
+import config
 
 _motor_dir = os.path.join(os.path.dirname(__file__), "motors", "motors")
 _motor_file = os.path.join(_motor_dir, "estes_e12.csv")
@@ -32,7 +21,7 @@ def load_motor(filename):
 def get_air_density(altitude):
     rho0 = 1.225
     scale_height = 8500.0
-    return rho0 * np.exp(-altitude / scale_height)
+    return rho0 * np.exp(-(altitude + config.LAUNCH_ALTITUDE) / scale_height)
 
 def get_thrust(t):
     if t >= _burn_time:
@@ -42,9 +31,9 @@ def get_thrust(t):
 def get_mass(t):
     if t < _burn_time:
         burn_fraction = t / _burn_time
-        burned = burn_fraction * PROPELLANT_MASS
-        return TOTAL_MASS - burned
-    return DRY_MASS
+        burned = burn_fraction * config.PROPELLANT_MASS
+        return config.TOTAL_MASS - burned
+    return config.DRY_MASS
 
 def calc_drag_2d(vx, vy, altitude, chute_deployed):
     rho = get_air_density(altitude)
@@ -52,11 +41,11 @@ def calc_drag_2d(vx, vy, altitude, chute_deployed):
     if speed == 0:
         return 0.0, 0.0
     if chute_deployed:
-        area = CHUTE_AREA
-        cd = CHUTE_CD
+        area = config.CHUTE_AREA
+        cd = config.CHUTE_CD
     else:
-        area = np.pi * (DIAMETER / 2) ** 2
-        cd = CD
+        area = np.pi * (config.DIAMETER / 2) ** 2
+        cd = config.CD
     drag_magnitude = 0.5 * rho * speed**2 * cd * area
     drag_x = -drag_magnitude * (vx / speed)
     drag_y = -drag_magnitude * (vy / speed)
@@ -65,13 +54,13 @@ def calc_drag_2d(vx, vy, altitude, chute_deployed):
 def calc_acceleration_2d(t, vx, vy, altitude, chute_deployed):
     thrust = get_thrust(t)
     mass = get_mass(t)
-    angle_rad = np.radians(LAUNCH_ANGLE)
+    angle_rad = np.radians(config.LAUNCH_ANGLE)
     thrust_x = thrust * np.cos(angle_rad)
     thrust_y = thrust * np.sin(angle_rad)
-    weight_y = mass * G
+    weight_y = mass * config.G
     wind_force_x = 0.0
     if t >= _burn_time:
-        wind_force_x = mass * 0.1 * WIND_SPEED
+        wind_force_x = mass * 0.1 * config.WIND_SPEED
     drag_x, drag_y = calc_drag_2d(vx, vy, altitude, chute_deployed)
     fx = thrust_x + drag_x + wind_force_x
     fy = thrust_y - weight_y + drag_y
