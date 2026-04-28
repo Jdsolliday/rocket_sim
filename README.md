@@ -136,6 +136,17 @@ Baseline Rocket → Simulation → Design Changes → Re-simulate → Compare �
 
 ##  Roadmap
 
+- [x] Physics engine — thrust, drag, gravity, variable mass
+- [x] 2D flight simulation loop
+- [x] Real motor thrust curve integration via CSV
+- [x] Motor selector dropdown
+- [x] Full parameter UI — mass, diameter, CD, parachute, wind, altitude
+- [x] 4 real-time performance plots
+- [x] Fort Collins launch altitude and air density correction
+- [x] 3D VPython flight animation
+- [x] Rocket body, nose cone, fins, and parachute in 3D
+- [x] Camera tracking with free zoom and pan
+- [x] Replay button
 - [ ] Full 3D physics (x, y, z motion)
 - [ ] Mach-dependent drag modeling
 - [ ] Stability analysis — center of pressure vs center of mass
@@ -156,7 +167,9 @@ This project aims to evolve into a full rocket design and analysis tool capable 
 
 ##  Screenshots
 
-(Add UI, plots, and 3D visualization images here)
+<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/5d543a22-52cd-4ea8-b3ea-0c8ec3209301" />
+<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/f31e488d-5e19-4cc6-a6fd-4f076412e38d" />
+<img width="600" height="450" alt="image" src="https://github.com/user-attachments/assets/f12b9b66-2166-4765-aea3-ff034e069c77" />
 
 ---
 
