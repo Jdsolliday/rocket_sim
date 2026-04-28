@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
 import os
+import json
+import subprocess
 import config
 import simulation
 
@@ -83,12 +85,15 @@ class RocketSimApp:
         self.motor_dropdown.set(motors[0])
         self.motor_dropdown.grid(column=2, row=5, columnspan=2)
 
-        # --- Button and output ---
+        # --- Buttons ---
         ttk.Button(frame, text="Run Simulation", command=self.run).grid(
-            column=0, row=8, columnspan=4, pady=10)
+            column=0, row=8, columnspan=4, pady=(10, 0))
+
+        ttk.Button(frame, text="View 3D Animation", command=self.view_3d).grid(
+            column=0, row=9, columnspan=4, pady=(0, 10))
 
         self.output = tk.Text(frame, height=5, width=60)
-        self.output.grid(column=0, row=9, columnspan=4)
+        self.output.grid(column=0, row=10, columnspan=4)
 
         self.chart_frame = ttk.Frame(root)
         self.chart_frame.grid(row=1, column=0, sticky="nsew")
@@ -96,9 +101,26 @@ class RocketSimApp:
         self.chart_frame.rowconfigure(0, weight=1)
 
         self.canvas = None
+        self.last_results = None
+
+    def view_3d(self):
+        if not self.last_results:
+            self.output.insert(tk.END, "Run simulation first!\n")
+            return
+
+        data = {
+            "time": self.last_results[0],
+            "x": self.last_results[1],
+            "alt": self.last_results[2],
+            "chute": self.last_results[6]
+        }
+        with open("anim_data.json", "w") as f:
+            json.dump(data, f)
+
+        # ✅ Use py -3.12 to ensure VPython runs on the correct Python version
+        subprocess.Popen(["py", "-3.12", "visualization.py"])
 
     def run(self):
-        # ✅ Push all UI values into config before running
         config.DRY_MASS = float(self.dry_mass.get())
         config.PROPELLANT_MASS = float(self.prop_mass.get())
         config.TOTAL_MASS = config.DRY_MASS + config.PROPELLANT_MASS
@@ -114,6 +136,8 @@ class RocketSimApp:
         simulation.load_motor(self.motor_var.get())
 
         results = simulation.run_simulation()
+        self.last_results = results
+
         time     = results[0]
         x        = results[1]
         altitude = results[2]
