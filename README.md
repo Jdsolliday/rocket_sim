@@ -162,7 +162,7 @@ This project aims to evolve into a full rocket design and analysis tool capable 
 
 ##  Author
 
-**Johnny Solliday** — Aerospace Physics Student
+**Johnny Solliday** — Aerospace Missions and System Design student at MSU Denver
 github.com/jdsolliday
 
 ---
